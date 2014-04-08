@@ -24,7 +24,7 @@ int main( int argc, char** argv )
 	//resize(src, src_resized, Size(1028, 1227), 0, 0, INTER_AREA);
 	
 	//split(src, ch);
-	img = cvLoadImage("2014-02-15/01_VIS_sv_045-0-0-0.png", CV_LOAD_IMAGE_GRAYSCALE);
+	img = cvLoadImage("2014-04-17/03_VIS_sv_090-0-0-0.png", CV_LOAD_IMAGE_GRAYSCALE);
 /*	IplImage *destination = cvCreateImage ( cvSize((int)((img->width)/2) , (int)((img->height)/2 )), img->depth, img->nChannels );
 	cvResize(img, destination)*/;
 //	cvtColor( src, src_gray, CV_RGB2GRAY )-;
