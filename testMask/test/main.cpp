@@ -9,30 +9,39 @@ using namespace cv;
 
 
 Mat src, src_gray, dst;
-vector<Mat> ch;
+
 
 
 int main( int argc, char** argv )
 {
 
-
-
 	IplImage *img;
-	//src = imread("C:\Users\pié-pié\Documents\Visual Studio 2010\Projects\test\test\2014-02-15\test.jpg",0);
-	//Mat src_resized;
 
-	//resize(src, src_resized, Size(1028, 1227), 0, 0, INTER_AREA);
-	
-	//split(src, ch);
-	img = cvLoadImage("2014-04-17/03_VIS_sv_090-0-0-0.png", CV_LOAD_IMAGE_GRAYSCALE);
-/*	IplImage *destination = cvCreateImage ( cvSize((int)((img->width)/2) , (int)((img->height)/2 )), img->depth, img->nChannels );
-	cvResize(img, destination)*/;
-//	cvtColor( src, src_gray, CV_RGB2GRAY )-;
+	img = cvLoadImage("2014-04-07/03_VIS_sv_090-0-0-0.png", -1);
+
 	namedWindow( "fufu", 0);
 	src = Mat(img);
-	threshold(src, dst, 150.0, 230.0, 1);
 
-	//cvShowImage( "fufu", img);
+	//blue color set to 0
+	for(int i = 0 ; i < src.rows ; i++)
+		for(int j = 0 ; j < src.cols ; j++)
+		{
+			int a = src.data[src.step[0]*i + src.step[1]* j + 0];
+			int b = src.data[src.step[0]*i + src.step[1]* j + 1];
+			int c = src.data[src.step[0]*i + src.step[1]* j + 2];
+			if(( (a > 50 && b > 20 && c > 10) && (a < 200 && b < 105 && c < 100)) || ((a+b+c)/3 > 120) || (a > 100) )
+			{
+				src.data[src.step[0]*i + src.step[1]* j + 0] = 0;
+				src.data[src.step[0]*i + src.step[1]* j + 1] = 0;
+				src.data[src.step[0]*i + src.step[1]* j + 2] = 0;
+			}
+
+		}
+
+	cvtColor(src, dst, CV_BGR2GRAY);
+
+	threshold(dst, dst, 60, 255, THRESH_OTSU);
+
 	imshow("fufu", dst);
 
 	cvWaitKey(0);
