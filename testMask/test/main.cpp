@@ -44,6 +44,8 @@ int main( int argc, char** argv )
 
 	imshow("fufu", dst);
 
+	imwrite("2014-04-07/WIP03_VIS_sv_090-0-0-0.png", dst);
+
 	cvWaitKey(0);
 	
 	return 0;
