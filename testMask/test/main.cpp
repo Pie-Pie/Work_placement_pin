@@ -37,6 +37,24 @@ int main( int argc, char** argv )
 			}
 
 		}
+	Mat srcHSV;
+
+	cvtColor(src, srcHSV, CV_RGB2HSV);
+
+	//for(int i = 0 ; i < src.rows ; i++)
+	//	for(int j = 0 ; j < src.cols ; j++)
+	//	{
+	//		int a = src.data[src.step[0]*i + src.step[1]* j + 0];
+	//		int b = src.data[src.step[0]*i + src.step[1]* j + 1];
+	//		int c = src.data[src.step[0]*i + src.step[1]* j + 2];
+	//		if( c > 100 )
+	//		{
+	//			src.data[src.step[0]*i + src.step[1]* j + 0] = 0;
+	//			src.data[src.step[0]*i + src.step[1]* j + 1] = 0;
+	//			src.data[src.step[0]*i + src.step[1]* j + 2] = 0;
+	//		}
+
+	//	}
 
 	cvtColor(src, dst, CV_BGR2GRAY);
 
