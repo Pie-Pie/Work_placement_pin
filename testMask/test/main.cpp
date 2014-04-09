@@ -20,16 +20,17 @@ int main( int argc, char** argv )
 	img = cvLoadImage("2014-04-07/03_VIS_sv_090-0-0-0.png", -1);
 
 	namedWindow( "fufu", 0);
+	namedWindow( "fufuline", 0);
 	src = Mat(img);
 
-	//blue color set to 0
+	//set to black useless pixels
 	for(int i = 0 ; i < src.rows ; i++)
 		for(int j = 0 ; j < src.cols ; j++)
 		{
 			int a = src.data[src.step[0]*i + src.step[1]* j + 0];
 			int b = src.data[src.step[0]*i + src.step[1]* j + 1];
 			int c = src.data[src.step[0]*i + src.step[1]* j + 2];
-			if(( (a > 50 && b > 20 && c > 10) && (a < 200 && b < 105 && c < 100)) || ((a+b+c)/3 > 120) || (a > 100) )
+			if(( (a > 50 && b > 20 && c > 10) && (a < 200 && b < 90 && c < 80)) || ((a+b+c)/3 > 120) || (a > 100) )
 			{
 				src.data[src.step[0]*i + src.step[1]* j + 0] = 0;
 				src.data[src.step[0]*i + src.step[1]* j + 1] = 0;
@@ -37,26 +38,33 @@ int main( int argc, char** argv )
 			}
 
 		}
-	//Mat srcHSV;
 
-	//cvtColor(src, srcHSV, CV_BGR2HSV);
 
-	//for(int i = 0 ; i < src.rows ; i++)
-	//	for(int j = 0 ; j < src.cols ; j++)
-	//	{
-	//		int a = src.data[src.step[0]*i + src.step[1]* j + 0];
-	//		int b = src.data[src.step[0]*i + src.step[1]* j + 1];
-	//		int c = src.data[src.step[0]*i + src.step[1]* j + 2];
-	//		if( c > 100 )
-	//		{
-	//			src.data[src.step[0]*i + src.step[1]* j + 0] = 0;
-	//			src.data[src.step[0]*i + src.step[1]* j + 1] = 0;
-	//			src.data[src.step[0]*i + src.step[1]* j + 2] = 0;
-	//		}
+	//Test with HSV
+	Mat srcHSV;
 
-	//	}
+	cvtColor(src, srcHSV, CV_BGR2HSV_FULL);
+
+	for(int i = 0 ; i < src.rows ; i++)
+		for(int j = 0 ; j < src.cols ; j++)
+		{
+			int a = src.data[src.step[0]*i + src.step[1]* j + 0];
+			int b = src.data[src.step[0]*i + src.step[1]* j + 1];
+			int c = src.data[src.step[0]*i + src.step[1]* j + 2];
+
+			if( b < 100 )
+			{
+				src.data[src.step[0]*i + src.step[1]* j + 0] = 0;
+				src.data[src.step[0]*i + src.step[1]* j + 1] = 0;
+				src.data[src.step[0]*i + src.step[1]* j + 2] = 0;
+			}
+
+		}
 
 	//dst = src;
+
+
+	//K means
 
 	//Mat labels;
 	//double compactness;
@@ -72,19 +80,72 @@ int main( int argc, char** argv )
 	// TermCriteria criteria(CV_TERMCRIT_EPS+CV_TERMCRIT_ITER, 10, 1.0);
 	// cvtColor(dst, dst, CV_BGR2GRAY);
 	// kmeans(reshaped_image32f, 10, labels, criteria, 3, KMEANS_RANDOM_CENTERS, centers );
-	cvtColor(src, dst, CV_BGR2GRAY);
+	cvtColor(srcHSV, dst, CV_HSV2BGR_FULL);
+	cvtColor(dst, dst, CV_BGR2GRAY);
+
+
+	Mat fu = Mat(src.rows, src.cols, DataType<int>::type);
+
+	Canny(dst, fu, 40, 255, 3);
+	cvtColor( fu, fu, COLOR_GRAY2BGR );
+
+	Mat fufu;
+
+	fu.convertTo(fufu, CV_8UC3);
+
+#if 0
+	vector<Vec2f> lines;
+
+	HoughLinesP(fufu, lines, CV_PI/2, 2, 80, 30, 1);
+
+	for( size_t i = 0; i < lines.size(); i++ )
+    {
+        float rho = lines[i][0];
+        float theta = lines[i][1];
+        double a = cos(theta), b = sin(theta);
+        double x0 = a*rho, y0 = b*rho;
+        Point pt1(cvRound(x0 + 1000*(-b)),
+                  cvRound(y0 + 1000*(a)));
+        Point pt2(cvRound(x0 - 1000*(-b)),
+                  cvRound(y0 - 1000*(a)));
+        line( fufu, pt1, pt2, Scalar(0,0,255), 3, 8 );
+    }
+
+#else
+	vector<Vec4i> lines;
+    HoughLinesP( fufu, lines, CV_PI/2, 2, 80, 30, 1);
+    for( size_t i = 0; i < lines.size(); i++ )
+    {
+        line( fufu, Point(lines[i][0], lines[i][1]),
+            Point(lines[i][2], lines[i][3]), Scalar(0,0,255), 3, 8 );
+    }
+
+#endif
+
+	imshow("fufuline", fufu);
+
+
 	threshold(dst, dst, 40, 255, THRESH_OTSU);
+	
+
+
+	//erode(dst,dst, Mat(2,2, DataType<int>::type),Point(-1, -1), 1, 1, 1 );
+	//dilate(dst,dst, Mat(2,2, DataType<int>::type),Point(-1, -1), 1, 1, 1 );
 
 	imshow("fufu", dst);
 	//show_result(labels, centers, dst.rows, dst.cols);
+
+
+
 	
-	imwrite("2014-04-07/WIPKMEANS03_VIS_sv_090-0-0-0.png", dst);
+	imwrite("2014-04-07/WIP03_VIS_sv_090-0-0-0.png", dst);
 
 	cvWaitKey(0);
 	
 	return 0;
 }
 
+//For displaying with k means
 //void show_result(const cv::Mat& labels, const cv::Mat& centers, int height, int width)
 //{
 //        std::cout << "===\n";
@@ -114,6 +175,8 @@ int main( int argc, char** argv )
 //        cv::waitKey();
 //}
 
+
+//Old, work
 
 //int main( int argc, char** argv )
 //{
