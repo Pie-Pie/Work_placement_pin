@@ -87,11 +87,13 @@ int main( int argc, char** argv )
 	Mat fu = Mat(src.rows, src.cols, DataType<int>::type);
 
 	Canny(dst, fu, 40, 255, 3);
-	cvtColor( fu, fu, COLOR_GRAY2BGR );
+	//cvtColor( fu, fu, COLOR_GRAY2BGR );
+	
+	IplImage* fuIpl = new IplImage(fu);
 
-	Mat fufu;
+	cvConvertScale(fuIpl, fuIpl, 256);
 
-	fu.convertTo(fufu, CV_8UC3);
+	Mat fufu(fuIpl);
 
 #if 0
 	vector<Vec2f> lines;
