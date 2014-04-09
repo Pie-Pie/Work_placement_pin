@@ -10,7 +10,7 @@ using namespace cv;
 
 Mat src, src_gray, dst, detected_edges;
 
-
+void show_result(const cv::Mat& labels, const cv::Mat& centers, int height, int width);
 
 int main( int argc, char** argv )
 {
@@ -37,9 +37,9 @@ int main( int argc, char** argv )
 			}
 
 		}
-	Mat srcHSV;
+	//Mat srcHSV;
 
-	cvtColor(src, srcHSV, CV_BGR2HSV);
+	//cvtColor(src, srcHSV, CV_BGR2HSV);
 
 	//for(int i = 0 ; i < src.rows ; i++)
 	//	for(int j = 0 ; j < src.cols ; j++)
@@ -56,18 +56,63 @@ int main( int argc, char** argv )
 
 	//	}
 
-	cvtColor(src, dst, CV_BGR2GRAY);
+	//dst = src;
 
+	//Mat labels;
+	//double compactness;
+
+	// Mat reshaped_image = dst.reshape(1, dst.cols * dst.rows);
+
+ //    assert(reshaped_image.type() == CV_8UC1);
+ //        
+ //    Mat reshaped_image32f;
+ //    reshaped_image.convertTo(reshaped_image32f, CV_32FC1, 1.0 / 255.0);
+ //    assert(reshaped_image32f.type() == CV_32FC1);
+	// Mat centers;
+	// TermCriteria criteria(CV_TERMCRIT_EPS+CV_TERMCRIT_ITER, 10, 1.0);
+	// cvtColor(dst, dst, CV_BGR2GRAY);
+	// kmeans(reshaped_image32f, 10, labels, criteria, 3, KMEANS_RANDOM_CENTERS, centers );
+	cvtColor(src, dst, CV_BGR2GRAY);
 	threshold(dst, dst, 40, 255, THRESH_OTSU);
 
 	imshow("fufu", dst);
-
-	imwrite("2014-04-07/WIP03_VIS_sv_090-0-0-0.png", dst);
+	//show_result(labels, centers, dst.rows, dst.cols);
+	
+	imwrite("2014-04-07/WIPKMEANS03_VIS_sv_090-0-0-0.png", dst);
 
 	cvWaitKey(0);
 	
 	return 0;
 }
+
+//void show_result(const cv::Mat& labels, const cv::Mat& centers, int height, int width)
+//{
+//        std::cout << "===\n";
+//        std::cout << "labels: " << labels.rows << " " << labels.cols << std::endl;
+//        std::cout << "centers: " << centers.rows << " " << centers.cols << std::endl;
+//        assert(labels.type() == CV_32SC1);
+//        assert(centers.type() == CV_32FC1);
+//         
+//        cv::Mat rgb_image(height, width, CV_8UC3);
+//        cv::MatIterator_<cv::Vec3b> rgb_first = rgb_image.begin<cv::Vec3b>();
+//        cv::MatIterator_<cv::Vec3b> rgb_last = rgb_image.end<cv::Vec3b>();
+//        cv::MatConstIterator_<int> label_first = labels.begin<int>();
+//         
+//        cv::Mat centers_u8;
+//        centers.convertTo(centers_u8, CV_8UC1, 255.0);
+//        cv::Mat centers_u8c3 = centers_u8/*.reshape(3)*/;
+//         
+//        while ( rgb_first != rgb_last ) {
+//                const cv::Vec3b& rgb = centers_u8c3.ptr<cv::Vec3b>(*label_first)[0];
+//                *rgb_first = rgb;
+//                ++rgb_first;
+//                ++label_first;
+//        }
+//		cvtColor(rgb_image, rgb_image, CV_BGR2GRAY);
+//		threshold(rgb_image, rgb_image, 0, 60, THRESH_OTSU);
+//        cv::imshow("fufu", rgb_image);
+//        cv::waitKey();
+//}
 
 
 //int main( int argc, char** argv )
