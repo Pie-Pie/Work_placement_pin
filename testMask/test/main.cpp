@@ -39,7 +39,7 @@ int main( int argc, char** argv )
 		}
 	Mat srcHSV;
 
-	cvtColor(src, srcHSV, CV_RGB2HSV);
+	cvtColor(src, srcHSV, CV_BGR2HSV);
 
 	//for(int i = 0 ; i < src.rows ; i++)
 	//	for(int j = 0 ; j < src.cols ; j++)
@@ -58,7 +58,7 @@ int main( int argc, char** argv )
 
 	cvtColor(src, dst, CV_BGR2GRAY);
 
-	threshold(dst, dst, 60, 255, THRESH_OTSU);
+	threshold(dst, dst, 40, 255, THRESH_OTSU);
 
 	imshow("fufu", dst);
 
