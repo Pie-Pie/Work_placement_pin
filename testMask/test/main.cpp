@@ -125,16 +125,57 @@ int main( int argc, char** argv )
 
 #endif
 
-	imshow("fufuline", fufu);
-
-
 	threshold(dst, dst, 40, 255, THRESH_OTSU);
+
+	int rows = src.rows;
+
+	int countMax = 0;
+	int iMax;
+	int sumMax;
+
+
+	int compteur = 0;
+
+	for(int i = 2000 ; i < fufu.rows - 300 ; i+=3)
+	{
+		for (int j = 0; j < fufu.cols; j++)
+		{
+			int a = src.data[src.step[0]*i + src.step[1]* j + 0];
+			int b = src.data[src.step[0]*i+1 + src.step[1]* j + 0];
+			int c = src.data[src.step[0]*i+2 + src.step[1]* j + 0];
+			if(a!=0)
+			{
+			  compteur++;
+			}
+			if(b!=0)
+			{
+			  compteur++;
+			}
+			if(c!=0)
+			{
+			  compteur++;
+			}
+		}
+
+		sumMax = compteur;
+		if (sumMax > countMax)
+		{
+			countMax = sumMax;
+			iMax = i;
+			compteur = 0;
+		}
+	}
+
+	Point2i p1(iMax, 1);
+	Point2i p2(iMax, 1500);
+
+	line(fufu, p1, p2, cv::Scalar(1.0), 1, CV_AA);
 	
 
 
 	//erode(dst,dst, Mat(2,2, DataType<int>::type),Point(-1, -1), 1, 1, 1 );
 	//dilate(dst,dst, Mat(2,2, DataType<int>::type),Point(-1, -1), 1, 1, 1 );
-
+	imshow("fufuline", fufu);
 	imshow("fufu", dst);
 	//show_result(labels, centers, dst.rows, dst.cols);
 
