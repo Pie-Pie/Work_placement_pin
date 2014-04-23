@@ -13,7 +13,7 @@ Mat src, src_gray, dst, detected_edges;
 void show_result(const cv::Mat& labels, const cv::Mat& centers, int height, int width);
 
 int main( int argc, char** argv )
-{
+{///355 77
 
 	IplImage *img;
 
