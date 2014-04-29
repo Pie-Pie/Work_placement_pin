@@ -30,8 +30,7 @@ int main( int argc, char** argv )
 			int a = src.data[src.step[0]*i + src.step[1]* j + 0];
 			int b = src.data[src.step[0]*i + src.step[1]* j + 1];
 			int c = src.data[src.step[0]*i + src.step[1]* j + 2];
-			if(( (a > 50 && b > 20 && c > 10) && (a < 200 && b < 90 && c 
-				< 80)) || ((a+b+c)/3 > 120) || (a > 100) )
+			if(( (a > 50 && b > 20 && c > 10) && (a < 200 && b < 90 && c < 80)) || ((a+b+c)/3 > 120) || (a > 100) )
 			{
 				src.data[src.step[0]*i + src.step[1]* j + 0] = 0;
 				src.data[src.step[0]*i + src.step[1]* j + 1] = 0;
@@ -59,7 +58,6 @@ int main( int argc, char** argv )
 				src.data[src.step[0]*i + src.step[1]* j + 1] = 0;
 				src.data[src.step[0]*i + src.step[1]* j + 2] = 0;
 			}
-
 		}
 
 	//dst = src;
@@ -125,8 +123,8 @@ int main( int argc, char** argv )
 
 #endif
 
-	threshold(dst, dst, 40, 255, THRESH_OTSU);
 
+	//Horizontal
 	int rows = src.rows;
 
 	int countMax = 0;
@@ -142,7 +140,6 @@ int main( int argc, char** argv )
 		{
 			int a = src.data[src.step[0]*i + src.step[1]* j + 0];
 			int b = src.data[src.step[0]*i+1 + src.step[1]* j + 0];
-			int c = src.data[src.step[0]*i+2 + src.step[1]* j + 0];
 			if(a!=0)
 			{
 			  compteur++;
@@ -151,10 +148,7 @@ int main( int argc, char** argv )
 			{
 			  compteur++;
 			}
-			if(c!=0)
-			{
-			  compteur++;
-			}
+
 		}
 
 		sumMax = compteur;
@@ -162,19 +156,248 @@ int main( int argc, char** argv )
 		{
 			countMax = sumMax;
 			iMax = i;
-			compteur = 0;
+		}
+		compteur = 0;
+	}
+
+	//Vertical
+	int cols = src.cols;
+
+	int countMaxV = 0;
+	int j1, j2;
+	int i1, i2, itemp;
+	bool suite = false;
+	int sumMaxv;
+
+
+	int compteurv = 0;
+
+	for (int j = 0 ; j < fufu.cols ; j+=8)
+	{
+		for(int i = 2000 ; i < fufu.rows - 300 ; i++)
+		{
+			int a = src.data[src.step[1]*j + src.step[0]* i + 0];
+			int b = src.data[src.step[1]*j+1 + src.step[0]* i + 0];
+			int c = src.data[src.step[1]*j+2 + src.step[0]* i + 0];
+			int d = src.data[src.step[1]*j+3 + src.step[0]* i + 0];
+			int e = src.data[src.step[1]*j+4 + src.step[0]* i + 0];
+			int f = src.data[src.step[1]*j+5 + src.step[0]* i + 0];
+
+			if(a!=0)
+			{
+			  compteurv++;
+			}
+			if(b!=0)
+			{
+			  compteurv++;
+			}
+			if(c!=0)
+			{
+			  compteurv++;
+			}
+			if(d!=0)
+			{
+			  compteurv++;
+			}
+			if(e!=0)
+			{
+			  compteurv++;
+			}
+			if(f!=0)
+			{
+			  compteurv++;
+			}
+
+			itemp = i;
+
+		}
+
+		sumMaxv = compteurv;
+		if (sumMaxv > countMaxV)
+		{
+			countMaxV = sumMaxv;
+			if(suite == false && countMaxV > 300)
+			{
+				j1 = j;
+				i1 = itemp;
+				suite = true;
+			}
+			if(countMaxV > 300 && suite == true)
+				j2 = j;
+				i2 = itemp;
+
+		}
+		compteurv = 0;
+	}
+	threshold(dst, dst, 40, 255, THRESH_OTSU);
+
+	imwrite("2014-04-07/WIP03_VIS_sv_090-0-0-0.png", dst);
+
+	//find j1 and j2 extremities
+
+	
+	int a = dst.data[dst.step[0]*iMax + dst.step[1]* j1 + 0];
+	int b = dst.data[dst.step[0]*iMax + dst.step[1]* j1 - 1];
+	int c = dst.data[dst.step[0]*iMax + dst.step[1]* j1 - 2];
+	int d = dst.data[dst.step[0]*iMax + dst.step[1]* j1 - 3];
+	int e = dst.data[dst.step[0]*iMax + dst.step[1]* j1 - 4];
+	int f = dst.data[dst.step[0]*iMax + dst.step[1]* j1 - 5];
+	int g = dst.data[dst.step[0]*iMax + dst.step[1]* j1 - 6];
+	int h = dst.data[dst.step[0]*iMax + dst.step[1]* j1 - 7];
+	int k = dst.data[dst.step[0]*iMax + dst.step[1]* j1 - 8];
+	int l = dst.data[dst.step[0]*iMax + dst.step[1]* j1 - 9];
+	int m = dst.data[dst.step[0]*iMax + dst.step[1]* j1 - 10];
+	int n = dst.data[dst.step[0]*iMax + dst.step[1]* j1 - 11];
+	int o = dst.data[dst.step[0]*iMax + dst.step[1]* j1 - 12];
+	if (a != 0)
+	{
+		j1 = j1;
+		if (b != 0)
+		{
+			j1 = j1--;
+			if (c != 0)
+			{
+				j1 = j1--;
+				if (d != 0)
+				{
+					j1 = j1--;
+					if (e != 0)
+					{
+						j1 = j1--;
+						if( f != 0)
+						{
+							j1 = j1--;
+							if( g != 0)
+							{
+								j1 = j1--;
+								if( h != 0)
+								{
+									j1 = j1--;
+									if( k != 0)	
+									{
+										j1 = j1--;
+										if( l != 0)
+										{
+											j1 = j1--;
+											if( m != 0)
+											{
+												j1 = j1--;
+												if( n != 0)
+												{
+													j1 = j1--;
+													if( o != 0)
+													{
+														j1 = j1--;
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+		
+
+	
+	a = dst.data[dst.step[0]*iMax + dst.step[1]* j2 + 0];
+	b = dst.data[dst.step[0]*iMax + dst.step[1]* j2 + 1];
+	c = dst.data[dst.step[0]*iMax + dst.step[1]* j2 + 2];
+	d = dst.data[dst.step[0]*iMax + dst.step[1]* j2 + 3];
+	e = dst.data[dst.step[0]*iMax + dst.step[1]* j2 + 4];
+	f = dst.data[dst.step[0]*iMax + dst.step[1]* j2 + 5];
+	g = dst.data[dst.step[0]*iMax + dst.step[1]* j2 + 6];
+	h = dst.data[dst.step[0]*iMax + dst.step[1]* j2 + 7];
+	k = dst.data[dst.step[0]*iMax + dst.step[1]* j1 + 8];
+	l = dst.data[dst.step[0]*iMax + dst.step[1]* j1 + 9];
+	m = dst.data[dst.step[0]*iMax + dst.step[1]* j1 + 10];
+	n = dst.data[dst.step[0]*iMax + dst.step[1]* j1 + 11];
+	o = dst.data[dst.step[0]*iMax + dst.step[1]* j1 + 12];
+	if (a != 0)
+	{
+		j2 = j2;
+		if (b != 0)
+		{
+			j2 = j2++;
+			if (c != 0)
+			{
+				j2 = j2++;
+				if (d != 0)
+				{
+					j2 = j2++;
+					if (e != 0)
+					{
+						j2 = j2++;
+						if( f != 0)
+						{
+							j2 = j2++;
+							if( g != 0)
+							{
+								j2 = j2++;
+								if( h != 0)
+								{
+									j2 = j2++;
+									if( k != 0)	
+									{
+										j2 = j2++;
+										if( l != 0)
+										{
+											j2 = j2++;
+											if( m != 0)
+											{
+												j2 = j2++;
+												if( n != 0)
+												{
+													j2 = j2++;
+													if( o != 0)
+													{
+														j2 = j2++;
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 
-	Point2i p1(iMax, 1);
-	Point2i p2(iMax, 1500);
 
-	line(fufu, p1, p2, cv::Scalar(1.0), 1, CV_AA);
+
+
+
+	for (int i = iMax - 50 ; i < dst.rows - 200 ; i++)
+	{
+		for (int j = j1- 5 ; j <= j2 + 5 ; j++)
+		{
+			int a = dst.data[dst.step[0]*i + dst.step[1]* j + 0];
+
+			if (a != 0 )
+				dst.data[dst.step[0]*i + dst.step[1]* j + 0] = 0;
+		}
+	}
 	
+	for (int i = dst.rows - 200 ; i < dst.rows ; i++)
+	{
+		for (int j = 0 ; j < dst.cols ; j++)
+		{
+			int a = dst.data[dst.step[0]*i + dst.step[1]* j + 0];
 
+			if (a != 0 )
+				dst.data[dst.step[0]*i + dst.step[1]* j + 0] = 0;
+		}
+	}
 
-	//erode(dst,dst, Mat(2,2, DataType<int>::type),Point(-1, -1), 1, 1, 1 );
-	//dilate(dst,dst, Mat(2,2, DataType<int>::type),Point(-1, -1), 1, 1, 1 );
+	erode(dst,dst, Mat(3,3, DataType<int>::type),Point(-1, -1), 1, 1, 1 );
+	dilate(dst,dst, Mat(3,3, DataType<int>::type),Point(-1, -1), 1, 1, 1 );
 	imshow("fufuline", fufu);
 	imshow("fufu", dst);
 	//show_result(labels, centers, dst.rows, dst.cols);
@@ -182,10 +405,10 @@ int main( int argc, char** argv )
 
 
 	
-	imwrite("2014-04-07/WIP03_VIS_sv_090-0-0-0.png", dst);
+	imwrite("2014-04-07/WIP_2_03_VIS_sv_090-0-0-0.png", dst);
 
 	cvWaitKey(0);
-	
+
 	return 0;
 }
 
